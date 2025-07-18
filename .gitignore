@@ -16,3 +16,4 @@ key.key
 pkg/
 bin/
 Gemfile.lock
+example/
