@@ -1,0 +1,25 @@
+module Domino
+  VERSION: String
+
+  class Scaffolder
+    def self.scaffold: (
+      ?tables: Array[String],
+      ?namespace: String,
+      ?generate_model: bool
+    ) -> void
+  end
+
+  class ScaffoldRunner
+    def initialize: (
+      model_name: String,
+      columns: Array[untyped],
+      namespace: String?,
+      generate_model: bool
+    ) -> void
+
+    def run: () -> void
+    def generate_model_file: () -> void
+    def column_args: () -> Array[String]
+    def generate_file: (String) -> void
+  end
+end
