@@ -10,4 +10,9 @@
 /temp/
 ./bin/
 /bin/
+.rspec_status
+key.key
+*.gem
+pkg/
 bin/
+Gemfile.lock
