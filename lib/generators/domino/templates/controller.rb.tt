@@ -12,7 +12,12 @@ class <%= @model_name.pluralize %>Controller < ApplicationController
   # GET /<%= @plural_file_name %>/:id
   # @return [JSON]
   def show
-    render json: <%= @model_name %>Blueprint.render(<%= @model_name.underscore %>_service.get(params[:id]))
+    record = <%= @file_name %>_service.get(params[:id])
+    if record.nil?
+      head :not_found
+    else
+      render json: <%= @model_name %>Blueprint.render(record)
+    end
   end
 
   # POST /<%= @plural_file_name %>
