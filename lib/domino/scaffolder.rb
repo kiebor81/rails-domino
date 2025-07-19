@@ -35,8 +35,13 @@ module Domino
 
     def run
       generate_model_file if @generate_model
+
       generate_file("repository")
+      register_dependency("#{@file_name}_repository", "#{@model_name}Repository")
+
       generate_file("service")
+      register_dependency("#{@file_name}_service", "#{@model_name}Service")
+
       generate_file("blueprint")
       generate_file("controller")
     end
@@ -97,6 +102,16 @@ module Domino
 
       FileUtils.mkdir_p(folder)
       File.write(File.join(folder, filename), content)
+    end
+
+    def register_dependency(key, class_name)
+      init_file = Rails.root.join("config/initializers/domino_container.rb")
+      line = "Domino::Container.register(\"#{key}\", -> { #{class_name}.new })"
+
+      FileUtils.mkdir_p(File.dirname(init_file))
+      return if File.exist?(init_file) && File.read(init_file).include?(line)
+
+      File.write(init_file, "#{line}\n", mode: "a")
     end
   end
 end

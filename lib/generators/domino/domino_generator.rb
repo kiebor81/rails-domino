@@ -15,7 +15,6 @@ class DominoGenerator < Rails::Generators::NamedBase # rubocop:disable Style/Doc
     @model_name = class_name
     @file_name = file_name
     @plural_file_name = file_name.pluralize
-    # @fields = attributes.map { |a| a.split(":").first }.reject { |f| f == "id" }
     @fields = attributes.map(&:name).reject { |f| f == "id" }
   end
 
@@ -27,10 +26,12 @@ class DominoGenerator < Rails::Generators::NamedBase # rubocop:disable Style/Doc
 
   def create_service
     template "service.rb.tt", File.join("app/services", "#{@file_name}_service.rb")
+    register_dependency("#{@file_name}_service", "#{@model_name}Service")
   end
 
   def create_repository
     template "repository.rb.tt", File.join("app/repositories", "#{@file_name}_repository.rb")
+    register_dependency("#{@file_name}_repository", "#{@model_name}Repository")
   end
 
   def create_blueprint
@@ -39,5 +40,17 @@ class DominoGenerator < Rails::Generators::NamedBase # rubocop:disable Style/Doc
 
   def create_controller
     template "controller.rb.tt", File.join("app/controllers", "#{@plural_file_name}_controller.rb")
+  end
+
+  private
+
+  def register_dependency(key, class_name)
+    init_file = Rails.root.join("config/initializers/domino_container.rb")
+    line = "Domino::Container.register(\"#{key}\", -> { #{class_name}.new })"
+
+    FileUtils.mkdir_p(File.dirname(init_file))
+    return if File.exist?(init_file) && File.read(init_file).include?(line)
+
+    File.write(init_file, "#{line}\n", mode: "a")
   end
 end
