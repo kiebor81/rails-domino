@@ -84,14 +84,9 @@ Each layer of the application is wired explicitly:
 For example:
 
 ```ruby
-# app/controllers/users_controller.rb
-class UsersController < ApplicationController
-  include Import["user_service"]
-end
-
 # app/services/user_service.rb
 class UserService
-  include Import["user_repository"]
+  include Domino::Import["user_repository"]
 end
 
 ```
@@ -190,46 +185,48 @@ resources :users
 
 ## Example Controller
 
-Domino generates a RESTful controller with all standard actions:
+Domino generates a RESTful controller with all standard actions. The service is injected into a method:
 
 ```ruby
 class UserController < ApplicationController
-  include Import['user_service']
-
   # GET /user
   # @return [JSON]
   def index
-    render json: UserBlueprint.render(@user_service.all)
+    render json: UserBlueprint.render(user_service.all)
   end
 
   # GET /user/:id
   # @return [JSON]
   def show
-    render json: UserBlueprint.render(@user_service.get(params[:id]))
+    render json: UserBlueprint.render(user_service.get(params[:id]))
   end
 
   # POST /user
   # @return [JSON]
   def create
-    obj = @user_service.create(resource_params)
+    obj = user_service.create(resource_params)
     render json: UserBlueprint.render(obj), status: :created
   end
 
   # PATCH/PUT /user/:id
   # @return [JSON]
   def update
-    obj = @user_service.update(params[:id], resource_params)
+    obj = user_service.update(params[:id], resource_params)
     render json: UserBlueprint.render(obj)
   end
 
   # DELETE /user/:id
   # @return [NoContent]
   def destroy
-    success = @user_service.delete(params[:id])
+    success = user_service.delete(params[:id])
     head(success ? :no_content : :not_found)
   end
 
   private
+
+  def user_service
+    @user_service ||= Domino::Container["user_service"]
+  end
 
   # @return [ActionController::Parameters]
   def resource_params
