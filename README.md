@@ -113,6 +113,16 @@ Every class declares exactly what it depends on. No hidden dependencies, no gues
 include Import["awesome_service"]
 ```
 
+After creating the components, Domino will generate an initializer (if it doesn't already exist), and register the services and repositories.
+
+```ruby
+# config/initializers/domino_container.rb
+Domino::Container.register("user_service", -> { UserService.new })
+Domino::Container.register("user_repository", -> { UserRepository.new })
+```
+
+For every Domino generation, this file will be appended.
+
 ---
 
 ## Installation
@@ -160,6 +170,8 @@ Domino.scaffold(
 )
 ```
 
+Domino assumes models do not already exist and defaults to creating them when executed database-first.
+
 ---
 
 ### Code-First Workflow
@@ -180,6 +192,8 @@ Add to your routes:
 ```ruby
 resources :users
 ```
+
+Domino assumes models already exist when the generator is used code-first and defaults to creating them only when `--with-model` is set. This will pass into a migration generation. Domino **will not** auto execute migrations.
 
 ---
 
