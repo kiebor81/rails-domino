@@ -178,7 +178,7 @@ Or, pair domino with the excellent [oas_rails](https://github.com/a-chacon/oas_r
 
 ## Notes
 
-- Rails 6+ supported
+- Rails 8+ supported
 - Compatible with `dry-auto_inject` and `blueprinter`
 - Ideal for API-only or full-stack Rails apps
 - Clean file output — no clutter or over-generation
