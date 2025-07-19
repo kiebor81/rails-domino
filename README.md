@@ -172,7 +172,7 @@ Generate docs with:
 yardoc
 ```
 
-Pair this with the excellent [oas_rails](https://github.com/a-chacon/oas_rails) for a complete self documented API with OAS RapiDoc.
+Or, pair domino with the excellent [oas_rails](https://github.com/a-chacon/oas_rails) for a complete self documented API with OAS RapiDoc.
 
 ---
 
