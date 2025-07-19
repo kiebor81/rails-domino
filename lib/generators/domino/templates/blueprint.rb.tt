@@ -1,0 +1,10 @@
+# Blueprint for serializing <%= @model_name %> model.
+#
+# @see https://github.com/procore/blueprinter
+#
+class <%= @model_name %>Blueprint < Blueprinter::Base
+  identifier :id
+
+  # Fields to expose
+  fields <%= @fields.map { |f| ":#{f}" }.join(", ") %>
+end

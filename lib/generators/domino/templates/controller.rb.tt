@@ -1,0 +1,45 @@
+# Controller for <%= @model_name.pluralize %> API endpoints.
+#
+class <%= @model_name.pluralize %>Controller < ApplicationController
+  include Import['<%= @model_name.underscore %>_service']
+
+  # GET /<%= @plural_file_name %>
+  # @return [JSON]
+  def index
+    render json: <%= @model_name %>Blueprint.render(@<%= @model_name.underscore %>_service.all)
+  end
+
+  # GET /<%= @plural_file_name %>/:id
+  # @return [JSON]
+  def show
+    render json: <%= @model_name %>Blueprint.render(@<%= @model_name.underscore %>_service.get(params[:id]))
+  end
+
+  # POST /<%= @plural_file_name %>
+  # @return [JSON]
+  def create
+    obj = @<%= @model_name.underscore %>_service.create(resource_params)
+    render json: <%= @model_name %>Blueprint.render(obj), status: :created
+  end
+
+  # PATCH/PUT /<%= @plural_file_name %>/:id
+  # @return [JSON]
+  def update
+    obj = @<%= @model_name.underscore %>_service.update(params[:id], resource_params)
+    render json: <%= @model_name %>Blueprint.render(obj)
+  end
+
+  # DELETE /<%= @plural_file_name %>/:id
+  # @return [NoContent]
+  def destroy
+    success = @<%= @model_name.underscore %>_service.delete(params[:id])
+    head(success ? :no_content : :not_found)
+  end
+
+  private
+
+  # @return [ActionController::Parameters]
+  def resource_params
+    params.require(:<%= @model_name.underscore %>).permit(:name)
+  end
+end

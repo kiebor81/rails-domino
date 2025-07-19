@@ -1,0 +1,43 @@
+# Repository for <%= @model_name %> model.
+#
+# Provides abstracted access to ActiveRecord persistence.
+#
+# @example
+#   repo = <%= @model_name %>Repository.new
+#   repo.find_by_id(1)
+#
+class <%= @model_name %>Repository < BaseRepository
+  # @param id [Integer]
+  # @return [<%= @model_name %>, nil]
+  def find_by_id(id)
+    <%= @model_name %>.find_by(id: id)
+  end
+
+  # @return [Array<<%= @model_name %>>]
+  def all
+    <%= @model_name %>.all
+  end
+
+
+  # @param attrs [Hash]
+  # @return [<%= @model_name %>]
+  def create(attrs)
+    <%= @model_name %>.create(attrs)
+  end
+
+  # @param id [Integer]
+  # @param attrs [Hash]
+  # @return [<%= @model_name %>, nil]
+  def update(id, attrs)
+    record = <%= @model_name %>.find_by(id: id)
+    record.update(attrs) if record
+    record
+  end
+
+  # @param id [Integer]
+  # @return [<%= @model_name %>, nil]
+  def delete(id)
+    record = <%= @model_name %>.find_by(id: id)
+    record&.destroy
+  end
+end

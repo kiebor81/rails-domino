@@ -48,7 +48,7 @@ Add Domino to your Rails app:
 
 ```ruby
 # Gemfile
-gem 'domino'
+gem "rails-domino"
 ```
 
 Then run:
@@ -60,25 +60,6 @@ bundle install
 ---
 
 ## Usage
-
-### Code-First Workflow
-
-Generate a fully layered domain module:
-
-```bash
-rails generate domino user name:string email:string active:boolean --with-model
-```
-
-Creates:
-- `User` model + migration (optional)
-- `UserService`, `UserRepository`, `UserBlueprint`
-- `UsersController`
-
-Add to your routes:
-
-```ruby
-resources :users
-```
 
 ---
 
@@ -101,9 +82,30 @@ Customize as needed:
 
 ```ruby
 Domino.scaffold(
-  tables: ['users'],
+  tables: ['users'], # a white list of required tables
   generate_model: false
 )
+```
+
+---
+
+### Code-First Workflow
+
+Generate a fully layered domain module:
+
+```bash
+rails generate domino user name:string email:string active:boolean --with-model
+```
+
+Creates:
+- `User` model + migration (optional)
+- `UserService`, `UserRepository`, `UserBlueprint`
+- `UsersController`
+
+Add to your routes:
+
+```ruby
+resources :users
 ```
 
 ---

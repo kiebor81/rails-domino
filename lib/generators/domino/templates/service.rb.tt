@@ -1,0 +1,44 @@
+# Service for business logic around <%= @model_name %>.
+#
+# @example
+#   service = <%= @model_name %>Service.new(...)
+#   result = service.get(1)
+#
+class <%= @model_name %>Service < BaseService
+  include Import['<%= @model_name.underscore %>_repository']
+
+  # @param <%= @file_name %>_repository [<%= @model_name %>Repository]
+  def initialize(<%= @model_name.underscore %>_repository:)
+    @<%= @model_name.underscore %>_repository = <%= @model_name.underscore %>_repository
+  end
+
+  # @param id [Integer]
+  # @return [<%= @model_name %>, nil]
+  def get(id)
+    @<%= @model_name.underscore %>_repository.find_by_id(id)
+  end
+
+  # @param attrs [Hash]
+  # @return [<%= @model_name %>]
+  def create(attrs)
+    @<%= @model_name.underscore %>_repository.create(attrs)
+  end
+
+  # @param id [Integer]
+  # @param attrs [Hash]
+  # @return [<%= @model_name %>, nil]
+  def update(id, attrs)
+    @<%= @model_name.underscore %>_repository.update(id, attrs)
+  end
+
+  # @param id [Integer]
+  # @return [Boolean]
+  def delete(id)
+    !!@<%= @model_name.underscore %>_repository.delete(id)
+  end
+
+  # @return [Array<<%= @model_name %>>]
+  def all
+    @<%= @model_name.underscore %>_repository.all
+  end
+end
