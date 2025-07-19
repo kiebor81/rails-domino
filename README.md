@@ -40,6 +40,84 @@ Domino applies several modern architectural foundations:
 - **Service Layer Pattern** (Martin Fowler) – Isolates orchestration logic
 - **AutoMapper-style Mapping** – Declarative data shaping with Blueprinter
 
+#### Controllers
+
+Controllers should be thin and focused solely on handling HTTP-level concerns. Their primary role is to delegate incoming requests to the appropriate service methods and return serialized output via Blueprints. They should not contain business logic, transformations, or model manipulation. This separation ensures controllers remain predictable, testable, and easily maintainable.
+
+#### Blueprints
+
+Blueprints act as response serializers and define the API's data contracts. They shape the output of domain entities into well-defined, consumer-facing structures, often selectively exposing only necessary fields or calculated properties. This promotes schema clarity, encapsulation, and forward compatibility while reducing overexposure of internal data. Blueprints are not bound 1:1 to models and support flexible, nested, or transformed output using [Blueprinter](https://github.com/procore/blueprinter).
+
+#### Services
+
+Services encapsulate all domain and business logic. They serve as orchestrators that coordinate between repositories and other services, apply rules, perform calculations, and prepare data for rendering. Services do **not** represent DTOs themselves, instead, they return plain Ruby objects (POROs) or data structures (e.g. hashes, value objects) that are then serialized by Blueprints. Keeping logic in services enforces Single Responsibility Principle and allows business logic to evolve independently of HTTP concerns.
+
+#### Repositories
+
+Repositories provide a consistent abstraction over data persistence and querying. Each repository corresponds to a domain model and exposes common CRUD operations. Repositories should not contain business logic or transformation logic; they strictly handle fetching and persisting domain entities. Custom query methods can be added where needed, but the repository layer should remain thin and predictable, only leveraging known relationships and rejecting expensive, convoluted, or join-heavy queries.
+
+#### Models
+
+Models represent the domain entities and are typically implemented using ActiveRecord. In Domino, models are intentionally kept lean, their purpose is to encapsulate the raw data schema and define associations, validations, and basic behaviour. 
+
+Business logic, rule orchestration, or data transformation should **not** reside in the model. These responsibilities are handled by the service layer. This separation promotes testability, maintainability, and decoupling from the persistence layer.
+
+Domino can work with both:
+- **Existing models**: If you have pre-defined ActiveRecord models, Domino will use them.
+- **Generated models**: In database-first workflows, Domino can auto-generate skeletal models based on the database schema using the `--with-model` flag.
+
+While ActiveRecord is the default ORM, Domino’s architecture allows for future substitution of the persistence strategy due to its layered boundaries.
+
+---
+
+## Dependency Injection with dry-rb
+
+Domino uses a Ruby-idiomatic form of **Dependency Injection (DI)** powered by the [`dry-container`](https://dry-rb.org/gems/dry-container) and [`dry-auto_inject`](https://dry-rb.org/gems/dry-auto_inject) gems. This promotes a modular, testable, and loosely coupled architecture without the need for _Rails magic_ or global state.
+
+### How It Works
+
+Each layer of the application is wired explicitly:
+
+- **Controllers** inject their corresponding **services**
+- **Services** inject their associated **repositories**
+
+For example:
+
+```ruby
+# app/controllers/users_controller.rb
+class UsersController < ApplicationController
+  include Import["user_service"]
+end
+
+# app/services/user_service.rb
+class UserService
+  include Import["user_repository"]
+end
+
+```
+
+#### Loose Coupling  
+Services and controllers don’t create their dependencies, they receive them. This enables:
+- Flexible substitution
+- Easy refactoring
+- Decoupling from implementation details
+
+#### Simplified Testing  
+Inject mocks or fakes in tests without any monkey-patching:
+
+```ruby
+user_service = UserService.new(user_repository: FakeRepo.new)
+```
+
+Test units in complete isolation without invoking the whole stack.
+
+#### Explicit and Transparent  
+Every class declares exactly what it depends on. No hidden dependencies, no guessing:
+
+```ruby
+include Import["awesome_service"]
+```
+
 ---
 
 ## Installation
