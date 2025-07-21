@@ -313,7 +313,7 @@ Or, pair domino with the excellent [oas_rails](https://github.com/a-chacon/oas_r
 
 ## License
 
-MIT
+MIT License © kiebor81
 
 ## Contributing
 
