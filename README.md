@@ -1,6 +1,7 @@
 # Rails-Domino
 
 [![Gem Version](https://badge.fury.io/rb/rails-domino.svg)](https://badge.fury.io/rb/rails-domino)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **`rails-domino`** (Further just Domino) is a gem for Rails that can turn **any existing database** into a fully functioning, self-documented, and maintainable **web API in seconds**.
 
