@@ -22,6 +22,8 @@ It scaffolds a clean, layered architecture around your domain models using **ser
 
 Domino follows a **Layered Architecture** inspired by **Domain-Driven Design (DDD)**, with principles borrowed from **Clean Architecture** and **Hexagonal Architecture**.
 
+![domino_arch_diagram](domino.png "Domino")
+
 ### Core Components
 
 - **Model** – Optional; generated from DB schema or via `--with-model`
